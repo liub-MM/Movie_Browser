@@ -1,5 +1,6 @@
 package com.example.movie_browser.presentation
 
+import MovieBrowserTheme
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +19,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.movie_browser.presentation.theme.Movie_BrowserTheme
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MovieViewModel by viewModels()
@@ -28,13 +28,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Movie_BrowserTheme {
+            MovieBrowserTheme {
                 Scaffold(modifier = Modifier.Companion.fillMaxSize()) { innerPadding ->
                     MainScreen(modifier = Modifier.padding(innerPadding), viewModel)
                 }
             }
         }
     }
+
 }
 
 @Composable
@@ -59,7 +60,7 @@ private fun MainScreen(
             is MainScreenState.Posts -> {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(currentState.list) { movie ->
-                        Text(text = movie.title)
+                        MovieCard(modifier, movie)
                     }
                 }
             }
