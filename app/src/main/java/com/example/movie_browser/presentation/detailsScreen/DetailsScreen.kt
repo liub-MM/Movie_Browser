@@ -60,6 +60,7 @@ private fun DetailsContent(
     onFavoriteClick: (MovieDto) -> Unit,
     isFavorite: Boolean
 ) {
+    val backdropUrl = "https://image.tmdb.org/t/p/w780${movie.backdropPath}"
     val posterUrl = "https://image.tmdb.org/t/p/w500${movie.posterPath}"
     val scrollState = rememberScrollState()
 
@@ -78,7 +79,7 @@ private fun DetailsContent(
                     .height(350.dp)
             ) {
                 AsyncImage(
-                    model = posterUrl,
+                    model = backdropUrl,
                     contentDescription = "Background for ${movie.title}",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
