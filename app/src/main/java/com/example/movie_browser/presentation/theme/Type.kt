@@ -1,4 +1,4 @@
-package com.example.movie_browser.ui.theme
+package com.example.movie_browser.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
