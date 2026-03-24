@@ -1,6 +1,5 @@
-package com.example.movie_browser.ui.theme
+package com.example.movie_browser.presentation.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
