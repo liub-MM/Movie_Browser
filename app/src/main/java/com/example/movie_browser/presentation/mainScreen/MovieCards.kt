@@ -1,4 +1,4 @@
-package com.example.movie_browser.presentation
+package com.example.movie_browser.presentation.mainScreen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,15 +14,18 @@ import coil3.compose.AsyncImage
 import com.example.moviebrowser.data.entityDto.MovieDto
 
 @Composable
-fun MovieCard(
+fun MovieCards(
     modifier: Modifier = Modifier,
-    movie: MovieDto
+    movie: MovieDto,
+    onMovieClick : (Int) -> Unit
 ) {
     val baseImageUrl = "https://image.tmdb.org/t/p/w500"
     val imageUrl = "$baseImageUrl${movie.posterPath}"
 
     Card(
-
+        onClick = {
+            onMovieClick(movie.id)
+        },
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),

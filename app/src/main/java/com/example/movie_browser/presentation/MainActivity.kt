@@ -6,19 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import com.example.movie_browser.navigation.MovieNavGraph
+import com.example.movie_browser.navigation.rememberNavigationState
+import com.example.movie_browser.presentation.detailsScreen.DetailsScreen
+import com.example.movie_browser.presentation.mainScreen.MainScreen
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MovieViewModel by viewModels()
@@ -30,40 +26,34 @@ class MainActivity : ComponentActivity() {
         setContent {
             MovieBrowserTheme {
                 Scaffold(modifier = Modifier.Companion.fillMaxSize()) { innerPadding ->
-                    MainScreen(modifier = Modifier.padding(innerPadding), viewModel)
+                    val navHost = rememberNavigationState()
+                    val modifier = Modifier
+                    modifier.padding(innerPadding)
+                    MovieNavGraph(
+                        navHostController = navHost.navHostController,
+                        detailsScreenContent = {
+                            LaunchedEffect(key1 = it) {
+                                viewModel.loadMovieDetails(it)
+                            }
+                            DetailsScreen(
+                                modifier = modifier,
+                                viewModel = viewModel
+                            )
+
+
+                        },
+                        homeScreenContent = {
+                            MainScreen(
+                                modifier,
+                                viewModel,
+                                onMovieClick = { itemid ->
+                                    navHost.navigateToDetails(itemid)
+                                })
+                        },
+                    )
                 }
             }
         }
     }
 
-}
-
-@Composable
-private fun MainScreen(
-    modifier: Modifier,
-    viewModel: MovieViewModel
-) {
-    val mainScreenState by viewModel.mainScreenState.collectAsState()
-
-    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-
-        when (val currentState = mainScreenState) {
-            is MainScreenState.Initial,
-            is MainScreenState.Loading -> {
-                CircularProgressIndicator()
-            }
-
-            is MainScreenState.Error -> {
-                Text(text = "Сталася помилка при завантаженні фільмів.")
-            }
-
-            is MainScreenState.Posts -> {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(currentState.list) { movie ->
-                        MovieCard(modifier, movie)
-                    }
-                }
-            }
-        }
-    }
 }

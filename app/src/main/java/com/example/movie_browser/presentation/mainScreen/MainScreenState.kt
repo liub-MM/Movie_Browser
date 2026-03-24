@@ -1,4 +1,4 @@
-package com.example.movie_browser.presentation
+package com.example.movie_browser.presentation.mainScreen
 
 import com.example.moviebrowser.data.entityDto.MovieDto
 
