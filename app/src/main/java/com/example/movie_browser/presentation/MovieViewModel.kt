@@ -26,6 +26,9 @@ class MovieViewModel @Inject constructor(
     private val observeIsFavouriteUseCase: ObserveIsFavouriteUseCase
 ) : ViewModel() {
 
+    private val _favouriteMoviesId =
+        MutableStateFlow<Set<Int>>(emptySet())
+    val favouriteMoviesId: StateFlow<Set<Int>> = _favouriteMoviesId
     private val _mainScreenState: MutableStateFlow<MainScreenState> =
         MutableStateFlow(MainScreenState.Initial)
     val mainScreenState: StateFlow<MainScreenState> = _mainScreenState
@@ -39,6 +42,16 @@ class MovieViewModel @Inject constructor(
 
     init {
         loadPosts()
+        observeFavourites()
+
+    }
+
+    private fun observeFavourites() {
+        viewModelScope.launch {
+            getFavouriteMoviesUseCase().collect { movies ->
+                _favouriteMoviesId.value = movies.map { it.id }.toSet()
+            }
+        }
     }
 
     fun loadMovieDetails(movieId: Int) {
@@ -72,15 +85,12 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-    fun changeFavouriteStatus(movie: Movie) {
-        val currentState = _detailsState.value
-        if (currentState is DetailsScreenState.Success) {
-            viewModelScope.launch {
-                if (currentState.isFavourite) {
-                    changeFavouriteStateUseCase.removeFromFavourite(movie.id)
-                } else {
-                    changeFavouriteStateUseCase.addToFavourite(movie)
-                }
+    fun changeFavouriteStatus(movie: Movie, isFavourite: Boolean) {
+        viewModelScope.launch {
+            if (isFavourite) {
+                changeFavouriteStateUseCase.removeFromFavourite(movie.id)
+            } else {
+                changeFavouriteStateUseCase.addToFavourite(movie)
             }
         }
     }

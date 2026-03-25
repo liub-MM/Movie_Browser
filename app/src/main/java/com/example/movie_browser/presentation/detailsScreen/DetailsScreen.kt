@@ -44,7 +44,6 @@ import com.example.movie_browser.utils.formatReleaseYear
 fun DetailsScreen(
     modifier: Modifier = Modifier,
     viewModel: MovieViewModel,
-    onFavoriteClick: (Movie) -> Unit
 ) {
     val state by viewModel.detailsState.collectAsState()
 
@@ -64,7 +63,12 @@ fun DetailsScreen(
             is DetailsScreenState.Success -> {
                 DetailsContent(
                     movie = currentState.movie,
-                    onFavoriteClick = {onFavoriteClick(it)},
+                    onFavoriteClick = {
+                        viewModel.changeFavouriteStatus(
+                            it,
+                            currentState.isFavourite
+                        )
+                    },
                     isFavorite = currentState.isFavourite
                 )
             }
