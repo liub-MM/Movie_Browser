@@ -39,7 +39,8 @@ class MainActivity : ComponentActivity() {
                             }
                             DetailsScreen(
                                 modifier = modifier,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                onFavoriteClick = { viewModel.changeFavouriteStatus(it) },
                             )
 
 
