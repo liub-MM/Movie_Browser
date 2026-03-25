@@ -17,9 +17,10 @@ import com.example.movie_browser.presentation.MovieViewModel
 fun MainScreen(
     modifier: Modifier,
     viewModel: MovieViewModel,
-    onMovieClick : (Int) -> Unit
+    onMovieClick: (Int) -> Unit
 ) {
     val mainScreenState by viewModel.mainScreenState.collectAsState()
+    val favouriteIds by viewModel.favouriteMoviesId.collectAsState()
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
 
@@ -36,7 +37,19 @@ fun MainScreen(
             is MainScreenState.Posts -> {
                 LazyColumn(modifier = Modifier.fillMaxSize()) {
                     items(currentState.list) { movie ->
-                        MovieCards(modifier, movie, onMovieClick = {onMovieClick(movie.id)})
+                        val isFav = favouriteIds.contains(movie.id)
+                        MovieCards(
+                            modifier,
+                            movie,
+                            onMovieClick = { onMovieClick(movie.id) },
+                            onAddToFavouriteClick = {
+                                viewModel.changeFavouriteStatus(
+                                    movie,
+                                    isFav
+                                )
+                            },
+                            isFavourite = isFav
+                        )
                     }
                 }
             }

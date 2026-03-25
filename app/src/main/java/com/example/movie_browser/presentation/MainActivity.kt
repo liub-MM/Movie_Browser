@@ -40,7 +40,6 @@ class MainActivity : ComponentActivity() {
                             DetailsScreen(
                                 modifier = modifier,
                                 viewModel = viewModel,
-                                onFavoriteClick = { viewModel.changeFavouriteStatus(it) },
                             )
 
 
