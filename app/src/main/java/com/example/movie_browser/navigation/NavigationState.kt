@@ -4,8 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import javax.inject.Inject
 
-class MovieNavigationState(val navHostController: NavHostController) {
+class MovieNavigationState @Inject constructor(val navHostController: NavHostController) {
     fun navigateToDetails(movieId: Int) {
         navHostController.navigate(Screen.Details.getRouteWithArgs(movieId))
     }

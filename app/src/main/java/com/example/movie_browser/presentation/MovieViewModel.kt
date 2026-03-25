@@ -2,15 +2,29 @@ package com.example.movie_browser.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movie_browser.domain.entity.Movie
+import com.example.movie_browser.domain.usecases.ChangeFavouriteStateUseCase
+import com.example.movie_browser.domain.usecases.GetDetailsMovieUseCase
+import com.example.movie_browser.domain.usecases.GetFavouriteMoviesUseCase
+import com.example.movie_browser.domain.usecases.GetPopularMoviesUseCase
+import com.example.movie_browser.domain.usecases.ObserveIsFavouriteUseCase
 import com.example.movie_browser.presentation.detailsScreen.DetailsScreenState
 import com.example.movie_browser.presentation.mainScreen.MainScreenState
-import com.example.moviebrowser.data.ApiFactory
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MovieViewModel() : ViewModel() {
-    private val apiService = ApiFactory.api
+@HiltViewModel
+class MovieViewModel @Inject constructor(
+    private val getMovieDetailsUseCase: GetDetailsMovieUseCase,
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
+    private val changeFavouriteStateUseCase: ChangeFavouriteStateUseCase,
+    private val getFavouriteMoviesUseCase: GetFavouriteMoviesUseCase,
+    private val observeIsFavouriteUseCase: ObserveIsFavouriteUseCase
+) : ViewModel() {
 
     private val _mainScreenState: MutableStateFlow<MainScreenState> =
         MutableStateFlow(MainScreenState.Initial)
@@ -20,6 +34,9 @@ class MovieViewModel() : ViewModel() {
         MutableStateFlow(DetailsScreenState.Loading)
     val detailsState: StateFlow<DetailsScreenState> = _detailsState
 
+
+    private var observeFavouriteJob: Job? = null
+
     init {
         loadPosts()
     }
@@ -28,8 +45,14 @@ class MovieViewModel() : ViewModel() {
         viewModelScope.launch {
             _detailsState.value = DetailsScreenState.Loading
             try {
-                val movie = apiService.getMovieDetails(movieId = movieId)
-                _detailsState.value = DetailsScreenState.Success(movie)
+                val movie = getMovieDetailsUseCase(movieId = movieId)
+                observeFavouriteJob?.cancel()
+
+                observeFavouriteJob = launch {
+                    observeIsFavouriteUseCase(movieId).collect { isFav ->
+                        _detailsState.value = DetailsScreenState.Success(movie, isFav)
+                    }
+                }
             } catch (e: Exception) {
                 _detailsState.value = DetailsScreenState.Error
             }
@@ -40,7 +63,7 @@ class MovieViewModel() : ViewModel() {
         viewModelScope.launch {
             _mainScreenState.value = MainScreenState.Loading
             try {
-                val posts = apiService.getPopularMovies().results
+                val posts = getPopularMoviesUseCase()
                 _mainScreenState.value = MainScreenState.Posts(posts)
             } catch (e: Exception) {
                 _mainScreenState.value = MainScreenState.Error
@@ -49,4 +72,16 @@ class MovieViewModel() : ViewModel() {
         }
     }
 
+    fun changeFavouriteStatus(movie: Movie) {
+        val currentState = _detailsState.value
+        if (currentState is DetailsScreenState.Success) {
+            viewModelScope.launch {
+                if (currentState.isFavourite) {
+                    changeFavouriteStateUseCase.removeFromFavourite(movie.id)
+                } else {
+                    changeFavouriteStateUseCase.addToFavourite(movie)
+                }
+            }
+        }
+    }
 }

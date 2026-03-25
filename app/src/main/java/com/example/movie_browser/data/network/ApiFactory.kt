@@ -1,8 +1,7 @@
-package com.example.moviebrowser.data
+package com.example.movie_browser.data.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.getValue
 
 object ApiFactory {
 

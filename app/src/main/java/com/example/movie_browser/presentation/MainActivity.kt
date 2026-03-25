@@ -15,7 +15,9 @@ import com.example.movie_browser.navigation.MovieNavGraph
 import com.example.movie_browser.navigation.rememberNavigationState
 import com.example.movie_browser.presentation.detailsScreen.DetailsScreen
 import com.example.movie_browser.presentation.mainScreen.MainScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel: MovieViewModel by viewModels()
 
@@ -37,7 +39,8 @@ class MainActivity : ComponentActivity() {
                             }
                             DetailsScreen(
                                 modifier = modifier,
-                                viewModel = viewModel
+                                viewModel = viewModel,
+                                onFavoriteClick = { viewModel.changeFavouriteStatus(it) },
                             )
 
 
