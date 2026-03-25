@@ -1,8 +1,9 @@
-package com.example.moviebrowser.data
+package com.example.movie_browser.data.network
 
 import com.example.moviebrowser.data.entityDto.MovieDto
 import com.example.moviebrowser.data.entityDto.MovieResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -16,7 +17,7 @@ interface ApiService {
 
     @GET("movie/{movie_id}")
     suspend fun getMovieDetails(
-        @retrofit2.http.Path("movie_id") movieId: Int,
+        @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String = KEY,
         @Query("language") language: String = "uk-UA"
     ): MovieDto

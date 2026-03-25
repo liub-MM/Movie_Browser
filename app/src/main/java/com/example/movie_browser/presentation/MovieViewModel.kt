@@ -1,10 +1,12 @@
 package com.example.movie_browser.presentation
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movie_browser.data.RepositoryImpl
 import com.example.movie_browser.presentation.detailsScreen.DetailsScreenState
 import com.example.movie_browser.presentation.mainScreen.MainScreenState
-import com.example.moviebrowser.data.ApiFactory
+import com.example.movie_browser.data.network.ApiFactory
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
