@@ -11,12 +11,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.example.moviebrowser.data.entityDto.MovieDto
+import com.example.movie_browser.domain.entity.Movie
 
 @Composable
 fun MovieCards(
     modifier: Modifier = Modifier,
-    movie: MovieDto,
+    movie: Movie,
     onMovieClick : (Int) -> Unit
 ) {
     val baseImageUrl = "https://image.tmdb.org/t/p/w500"
