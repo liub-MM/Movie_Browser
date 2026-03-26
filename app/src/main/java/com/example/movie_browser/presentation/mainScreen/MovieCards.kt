@@ -2,10 +2,16 @@ package com.example.movie_browser.presentation.mainScreen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -17,7 +23,9 @@ import com.example.movie_browser.domain.entity.Movie
 fun MovieCards(
     modifier: Modifier = Modifier,
     movie: Movie,
-    onMovieClick : (Int) -> Unit
+    onMovieClick: (Int) -> Unit,
+    onAddToFavouriteClick: () -> Unit,
+    isFavourite : Boolean
 ) {
     val baseImageUrl = "https://image.tmdb.org/t/p/w500"
     val imageUrl = "$baseImageUrl${movie.posterPath}"
@@ -55,14 +63,28 @@ fun MovieCards(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(
-                    text = movie.title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row {
+                    Text(
+                        modifier = modifier.weight(3f),
+                        text = movie.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    IconButton(
+                        modifier = modifier.weight(1f),
+                        onClick = {onAddToFavouriteClick()}) {
+                        Icon(
+                            imageVector = if (isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = "Додати в обране",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+
+                    }
+                }
+
 
                 Text(
                     text = movie.overview,
