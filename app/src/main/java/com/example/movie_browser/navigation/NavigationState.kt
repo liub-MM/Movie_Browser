@@ -10,9 +10,17 @@ class MovieNavigationState @Inject constructor(val navHostController: NavHostCon
     fun navigateToDetails(movieId: Int) {
         navHostController.navigate(Screen.Details.getRouteWithArgs(movieId))
     }
-
-    fun navigateBack() {
-        navHostController.popBackStack()
+    fun navigateToFavourite() {
+        navHostController.navigate(Screen.Favourite.route) {
+            popUpTo(Screen.Home.route)
+            launchSingleTop = true
+        }
+    }
+    fun navigateToHome() {
+        navHostController.navigate(Screen.Home.route) {
+            popUpTo(Screen.Home.route)
+            launchSingleTop = true
+        }
     }
 
 }

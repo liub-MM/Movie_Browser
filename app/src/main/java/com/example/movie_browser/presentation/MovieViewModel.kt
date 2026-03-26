@@ -13,7 +13,9 @@ import com.example.movie_browser.presentation.mainScreen.MainScreenState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +31,14 @@ class MovieViewModel @Inject constructor(
     private val _favouriteMoviesId =
         MutableStateFlow<Set<Int>>(emptySet())
     val favouriteMoviesId: StateFlow<Set<Int>> = _favouriteMoviesId
+
+    val favouriteMoviesList: StateFlow<List<Movie>> = getFavouriteMoviesUseCase()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
+
     private val _mainScreenState: MutableStateFlow<MainScreenState> =
         MutableStateFlow(MainScreenState.Initial)
     val mainScreenState: StateFlow<MainScreenState> = _mainScreenState
@@ -72,7 +82,7 @@ class MovieViewModel @Inject constructor(
         }
     }
 
-    fun loadPosts() {
+    private fun loadPosts() {
         viewModelScope.launch {
             _mainScreenState.value = MainScreenState.Loading
             try {

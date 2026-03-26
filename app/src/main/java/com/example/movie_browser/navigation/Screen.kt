@@ -10,8 +10,10 @@ sealed class Screen(val route: String) {
             return "$ROUTE_FOR_ARGS/$movieId"
         }
     }
+    object Favourite : Screen(ROUTE_FAVOURITE)
 
     companion object {
+        const val  ROUTE_FAVOURITE= "favourite"
         const val ROUTE_HOME = "home"
         const val KEY_MOVIE_ID = "movieId"
         const val ROUTE_DETAILS = "details/{$KEY_MOVIE_ID}"
