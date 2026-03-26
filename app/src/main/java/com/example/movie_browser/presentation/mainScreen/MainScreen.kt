@@ -1,6 +1,7 @@
 package com.example.movie_browser.presentation.mainScreen
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.movie_browser.presentation.MovieViewModel
 
 @Composable
@@ -35,11 +37,14 @@ fun MainScreen(
             }
 
             is MainScreenState.Posts -> {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(bottom = 16.dp)
+                ) {
                     items(currentState.list) { movie ->
                         val isFav = favouriteIds.contains(movie.id)
                         MovieCards(
-                            modifier,
+                            modifier= Modifier,
                             movie,
                             onMovieClick = { onMovieClick(movie.id) },
                             onAddToFavouriteClick = {

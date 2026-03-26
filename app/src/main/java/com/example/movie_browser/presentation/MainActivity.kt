@@ -66,7 +66,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }) { innerPadding ->
                     val modifier = Modifier
-                    modifier.padding(innerPadding)
                     MovieNavGraph(
                         navHostController = navHost.navHostController,
                         detailsScreenContent = {
@@ -82,14 +81,17 @@ class MainActivity : ComponentActivity() {
                         },
                         homeScreenContent = {
                             MainScreen(
-                                modifier,
+                                modifier.padding(innerPadding),
                                 viewModel,
                                 onMovieClick = { itemid ->
                                     navHost.navigateToDetails(itemid)
                                 })
                         },
                         favouriteContent = {
-                            FavouriteScreen(viewModel = viewModel) {
+                            FavouriteScreen(
+                                viewModel = viewModel,
+                                modifier = Modifier.padding(innerPadding)
+                            ) {
                                 navHost.navigateToDetails(it)
                             }
                         }
